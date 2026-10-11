@@ -450,6 +450,8 @@ footer { border-top: 1px solid var(--border-soft); padding: var(--sp-5) 0; margi
 .foot-links { margin-left: 0 !important; }
 footer .fine { font-size: 12.5px; color: var(--text-faint); max-width: 70ch; margin: 0; }
 footer .fine .js-version { font-family: var(--mono); }
+footer .fine .made { color: var(--text-soft); margin-left: 0.4em; }
+footer .fine .made::before { content: "· "; opacity: 0.6; }
 
 /* ── Back to top ─────────────────────────────────────────────────────── */
 
