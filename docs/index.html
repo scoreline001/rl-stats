@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>scoreline — RL Stats · Rocket League win/loss tracker</title>
+<meta name="description" content="scoreline reads the stats Rocket League already exports and turns them into a clean match history: win rate, streaks, goals, teammates and a live scoreboard. Read-only, on your PC, no account." />
+<meta name="theme-color" content="#0a0d12" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://scoreline001.github.io/rl-stats/" />
+<link rel="icon" href="logo.png" />
+
+<!-- Share cards: this page gets pasted in Discord/WhatsApp, so the preview
+     shows the app, the name and one honest line. -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="scoreline — Rocket League win/loss tracker" />
+<meta property="og:description" content="Win rate, streaks, goals, teammates — read from the stats socket the game itself opens. Read-only, offline, no account." />
+<meta property="og:image" content="shots/overview.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="scoreline — Rocket League win/loss tracker" />
+<meta name="twitter:description" content="Every match. Written down. Read-only, offline, no account." />
+<meta name="twitter:image" content="shots/overview.png" />
+
+<!-- The reveal animation only ever hides content while JS is running: the
+     "js" class gates it, and a timer un-hides everything as a safety net. -->
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip" href="#top">Skip to content</a>
+
+<!--
+  Download links point at GitHub Releases for scoreline001/rl-stats.
+  The static hrefs below are the fallback; a small script upgrades them to
+  the exact asset URL (and fills version / size / date) when GitHub answers.
+-->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="scoreline — RL Stats, home">
+      <img src="logo.png" alt="" width="30" height="30" />
+      <span>scoreline</span>
+      <span class="tag">RL Stats</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#straight">Straight talk</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-gh" href="https://github.com/scoreline001/rl-stats" target="_blank" rel="noopener" aria-label="scoreline on GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.35-1.29-1.71-1.29-1.71-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.41-1.28.74-1.57-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.5 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.8 1.08.8 2.18v3.23c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+      <span class="stars js-stars">GitHub</span>
+    </a>
+    <a class="btn btn-primary" href="#download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      Download
+    </a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="pill">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="js-version">v1.0.0</span>
+        <span class="pill-sep" aria-hidden="true">·</span>
+        <span>out now on GitHub</span>
+      </div>
+      <div class="eyebrow">Rocket League win/loss tracker</div>
+      <h1>Every match.<br /><span class="hl">Written down.</span></h1>
+      <p class="lead">
+        scoreline reads the stats Rocket League already exports and turns them into a clean
+        history — win rate, streaks, goals, teammates and a live scoreboard over the
+        game. On your PC. No account, no cloud, no guessing.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary js-dl-setup" href="https://github.com/scoreline001/rl-stats/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn btn-ghost" href="#features">See what it does</a>
+      </div>
+      <div class="meta">
+        <span>Free</span>
+        <span>Windows 10 / 11 (64-bit)</span>
+        <span>English &amp; Français</span>
+        <span>Read-only</span>
+      </div>
+    </div>
+
+    <div class="hero-shot">
+      <div class="window" role="img" aria-label="scoreline overview screen">
+        <div class="window-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="title">scoreline — RL Stats</span>
+        </div>
+        <img src="shots/overview.png" alt="The scoreline overview: today's session, wins and losses, win rate, streaks and goals." width="1224" height="821" fetchpriority="high" />
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="strip" aria-label="At a glance">
+  <div class="wrap strip-inner">
+    <span class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+      Never touches the game
+    </span>
+    <span class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A9.8 9.8 0 0 1 12 5c5 0 9 4.5 10 7-.4 1-1.3 2.4-2.6 3.7"/><path d="M6.6 6.6C4.4 8 3 10 2 12c1 2.5 5 7 10 7 1.4 0 2.7-.3 3.8-.9"/></svg>
+      No account, no cloud
+    </span>
+    <span class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M2 9a15 15 0 0 1 20 0"/><path d="M12 20h.01"/></svg>
+      Works offline
+    </span>
+    <span class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+      Keeps itself up to date
+    </span>
+    <span class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="m8.5 11.5 1.8 1.8 3.4-3.4"/></svg>
+      Finds your game by itself
+    </span>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Features</div>
+      <h2>Everything you'd track by hand, tracked already.</h2>
+      <p>No macros, no screenshots of the scoreboard, no spreadsheet. Open the app and the numbers are there.</p>
+    </div>
+
+    <div class="grid">
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+        <h3>A live match card</h3>
+        <p>While a match runs, the running score, the current result and a goal flash the moment a goal lands — for both sides.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></div>
+        <h3>Full match history</h3>
+        <p>Mode, score, goals, assists, saves and duration for every game. Filter by queue, teammate or date, and export to JSON or CSV.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>
+        <h3>Teammate win rates</h3>
+        <p>See who you actually win with, sorted by how often you play together — both numbers, never just the flattering one.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/></svg></div>
+        <h3>Weekly &amp; monthly reports</h3>
+        <p>Turn the last 7 or 30 days into one block: win rate, best and current streak, and how you compare with the window before it.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M3 14h4"/><path d="M5 12v4"/></svg></div>
+        <h3>Party or random?</h3>
+        <p>Scoreline says how you queued — confirmed by one click, or inferred from party-leader flags. When the game doesn't say, it admits it instead of guessing.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="5"/><path d="M19 3l1.5 1.5L23 2"/></svg></div>
+        <h3>Your name, remembered</h3>
+        <p>Pick your in-game name once from the list of players the app has seen. Every match you already played is re-attributed — nothing recorded before the name was set is lost.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h3>Open any match</h3>
+        <p>The full scoreboard: both teams, every goal, ball speeds, and delete-only actions for the odd game that slipped in.</p>
+      </article>
+
+      <article class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></div>
+        <h3>Quiet auto-update</h3>
+        <p>When it's installed as a normal app, new versions download in the background and install on restart — and never mid-match.</p>
+      </article>
+
+      <article class="card wide reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+        <h3>An overlay that floats over the game</h3>
+        <p>A tiny always-on-top scoreboard you can park in any of nine corners — your score against theirs, updating live. It never steals focus from Rocket League, and in lite mode it stays out of the way entirely.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps. Then it just runs.</h2>
+      <p>scoreline doesn't hook the game or read its memory. Rocket League already exposes a local stats socket — scoreline simply listens to it.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="n">1</div>
+        <h3>Let the game write its config</h3>
+        <p>Open Rocket League once so it creates its stats API file. scoreline finds it by itself — every Steam library, the Epic launcher's manifests, the real Documents folder (OneDrive too), and a scan of your drives.</p>
+      </div>
+      <div class="step reveal">
+        <div class="n">2</div>
+        <h3>Start scoreline</h3>
+        <p>It connects to the socket the game already opens on your own PC. Nothing is injected and no game files are changed.</p>
+      </div>
+      <div class="step reveal">
+        <div class="n">3</div>
+        <h3>Play</h3>
+        <p>Every match lands in your history as it ends, and the live card keeps score while you're in a game.</p>
+      </div>
+    </div>
+    <p class="hint reveal">Only if your install lives somewhere truly unusual does Settings offer a manual <code>TAGame\Config</code> folder field — everything else is automatic.</p>
+  </div>
+</section>
+
+<section class="section" id="screens">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Screenshots</div>
+      <h2>What it looks like.</h2>
+      <p>A dark, quiet dashboard built to be read at a glance after a match. Click any shot to enlarge.</p>
+    </div>
+    <div class="gallery">
+      <figure class="shot tall reveal">
+        <button class="shot-btn" type="button" data-full="shots/drawer.png" aria-label="Enlarge: match detail drawer">
+          <img src="shots/drawer.png" alt="The match detail drawer: both teams, every goal, ball speeds." width="1224" height="821" loading="lazy" decoding="async" />
+        </button>
+        <figcaption>Open any match for the full scoreboard — both teams, each goal and the ball speed.</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <button class="shot-btn" type="button" data-full="shots/matches.png" aria-label="Enlarge: match history">
+          <img src="shots/matches.png" alt="Match history with filters and export." width="1224" height="821" loading="lazy" decoding="async" />
+        </button>
+        <figcaption>The history: filter by queue, teammate or date, then export.</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <button class="shot-btn" type="button" data-full="shots/teammates.png" aria-label="Enlarge: teammate win rates">
+          <img src="shots/teammates.png" alt="Win rate with teammates." width="1224" height="821" loading="lazy" decoding="async" />
+        </button>
+        <figcaption>Win rate with each teammate, sorted by how often you play together.</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <button class="shot-btn" type="button" data-full="shots/live.png" aria-label="Enlarge: live match card">
+          <img src="shots/live.png" alt="The live match card during a game." width="1224" height="821" loading="lazy" decoding="async" />
+        </button>
+        <figcaption>A live card keeps the running score while you play.</figcaption>
+      </figure>
+      <figure class="shot reveal">
+        <button class="shot-btn" type="button" data-full="shots/settings.png" aria-label="Enlarge: settings screen">
+          <img src="shots/settings.png" alt="Settings, including language and the Rocket League config folder." width="1224" height="821" loading="lazy" decoding="async" />
+        </button>
+        <figcaption>Built-in setup checks, language, and a manual config-folder field.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="straight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Straight talk</div>
+      <h2>What it doesn't do.</h2>
+      <p>An honest tracker is worth more than an optimistic one.</p>
+    </div>
+    <div class="honest">
+      <article class="card reveal">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+          No touching the game
+        </h3>
+        <p>No injection, no memory reading, no game-file edits. It reads only the stats socket the game itself opens, on localhost.</p>
+      </article>
+      <article class="card reveal">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A9.8 9.8 0 0 1 12 5c5 0 9 4.5 10 7-.4 1-1.3 2.4-2.6 3.7"/><path d="M6.6 6.6C4.4 8 3 10 2 12c1 2.5 5 7 10 7 1.4 0 2.7-.3 3.8-.9"/></svg>
+          No phoning home
+        </h3>
+        <p>No account and no server. Your matches and settings stay in a folder on your own PC, and you can export them any time.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="download">
+  <div class="wrap">
+    <div class="download reveal">
+      <div class="eyebrow">Download</div>
+      <div class="pill pill-lg"><span class="dot" aria-hidden="true"></span><span class="js-version">v1.0.0</span></div>
+      <h2>Get scoreline for Windows</h2>
+      <p>Windows 10 or 11, 64-bit. Take the installer for automatic updates, or the portable build if you'd rather not install anything at all.</p>
+
+      <div class="dl-row">
+        <a class="btn btn-primary js-dl-setup" href="https://github.com/scoreline001/rl-stats/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download installer
+        </a>
+        <a class="btn js-dl-portable" href="https://github.com/scoreline001/rl-stats/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download portable
+        </a>
+        <button class="btn btn-ghost" type="button" id="copy-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="copy-link-text">Copy download link</span>
+        </button>
+      </div>
+
+      <div class="dl-row dl-cards">
+        <div class="dl-card">
+          <span class="k">Installer — recommended</span>
+          <span class="v js-setup-name">scoreline-setup-1.0.0-x64.exe</span>
+          <span class="v js-setup-size">76 MB · start menu, uninstaller, auto-update</span>
+        </div>
+        <div class="dl-card">
+          <span class="k">Portable</span>
+          <span class="v js-portable-name">scoreline-1.0.0-portable.exe</span>
+          <span class="v js-portable-size">75 MB · single file, nothing installed</span>
+        </div>
+      </div>
+
+      <p class="dl-note js-date">Published on GitHub — <a href="https://github.com/scoreline001/rl-stats/releases">scoreline001/rl-stats</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions people ask first.</h2>
+    </div>
+    <div class="faq">
+      <details class="q reveal">
+        <summary>Is it safe? Does it change anything in the game?</summary>
+        <div class="a">
+          <p>It only reads. scoreline connects to the local stats socket Rocket League itself opens and never injects, reads memory, or edits game files. Close the app and the game is untouched.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>Do I need Rocket League running?</summary>
+        <div class="a">
+          <p>The app can be open any time. It records matches while you play; whatever you've already played stays in your history afterwards. The game has to be launched at least once before the stats API file exists.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>Why is there no rank or MMR shown?</summary>
+        <div class="a">
+          <p>Because the game doesn't export it. The stats Rocket League writes contain wins, losses, goals and the like — but no rank. Rather than estimate, scoreline says so plainly.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>Does it work with Steam and Epic?</summary>
+        <div class="a">
+          <p>Both. scoreline reads every Steam library folder (including libraries on other drives), the Epic Games Launcher's own manifests, and your real Documents folder — wherever the config lives, it's found automatically. If an install is somewhere truly unusual, add its <code>TAGame\Config</code> folder in Settings.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>Where is my data stored?</summary>
+        <div class="a">
+          <p>In a folder on your PC under your user profile (<code>%APPDATA%\scoreline</code>). Nothing is uploaded anywhere, and you can export the whole history to JSON or CSV from the Matches tab.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>What languages does it support?</summary>
+        <div class="a">
+          <p>English and French, switchable in Settings.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>How does auto-update work?</summary>
+        <div class="a">
+          <p>When you use the installer build, scoreline checks for a new version shortly after launch and then every few hours. It downloads quietly in the background and offers a restart once it's ready — never during a match. Portable builds open the download page instead.</p>
+        </div>
+      </details>
+      <details class="q reveal">
+        <summary>Will my antivirus complain?</summary>
+        <div class="a">
+          <p>Windows SmartScreen may warn "unknown publisher" because releases aren't code-signed — that's a certificate cost, not a red flag. Click <strong>More info → Run anyway</strong>. Every file is built from this repository's public source.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <a class="brand" href="#top">
+      <img src="logo.png" alt="" width="26" height="26" />
+      <span>scoreline</span>
+      <span class="tag">RL Stats</span>
+    </a>
+    <div class="nav-links foot-links">
+      <a href="#features">Features</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#download">Download</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/scoreline001/rl-stats" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <p class="fine">
+      A Rocket League™ win/loss tracker. Not affiliated with or endorsed by Psyonix or
+      Epic Games. Reads only the stats API the game itself exposes.
+      <span class="js-version faint">v1.0.0</span>
+    </p>
+  </div>
+</footer>
+
+<!-- Lightbox: one overlay, images swapped in on click. -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" type="button" aria-label="Close">&times;</button>
+  <img alt="" />
+</div>
+
+<!-- Small-screen CTA: appears once the hero is scrolled past. -->
+<a class="mcta" id="mcta" href="#download">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+  Download scoreline
+</a>
+
+<button class="totop" id="totop" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+</button>
+
+<script>
+  // Reveal sections as they scroll in. Purely decorative; without the observer
+  // (or with reduced motion) the content is simply visible.
+  (function () {
+    var nodes = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      for (var i = 0; i < nodes.length; i += 1) nodes[i].classList.add('in');
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+    for (var j = 0; j < nodes.length; j += 1) io.observe(nodes[j]);
+
+    // Safety net: if nothing has been revealed yet (hidden tab, unusual
+    // speed), show everything after one second instead of leaving content
+    // invisible.
+    setTimeout(function () {
+      if (!document.querySelector('.reveal.in')) {
+        for (var k = 0; k < nodes.length; k += 1) nodes[k].classList.add('in');
+      }
+    }, 1000);
+  })();
+
+  // Everything below is progressive enhancement: the page is complete and
+  // correct without it.
+  (function () {
+    var RELEASES = 'https://github.com/scoreline001/rl-stats/releases';
+    var API = 'https://api.github.com/repos/scoreline001/rl-stats/releases/latest';
+    var DOWNLOAD = RELEASES + '/latest/download/';
+
+    function mb(bytes) {
+      return (bytes / 1048576).toFixed(1).replace(/\.0$/, '') + ' MB';
+    }
+    function setText(sel, text) {
+      document.querySelectorAll(sel).forEach(function (el) { el.textContent = text; });
+    }
+
+    // Live version, sizes, date and direct asset links from GitHub. On any
+    // failure the static markup stands — nothing breaks offline.
+    fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (rel) {
+        var tag = rel.tag_name || '';
+        if (tag) setText('.js-version', tag);
+
+        var setup = null;
+        var portable = null;
+        (rel.assets || []).forEach(function (a) {
+          if (!a || typeof a.name !== 'string') return;
+          if (/setup.*x64.*\.exe$/i.test(a.name)) setup = a;
+          else if (/portable.*\.exe$/i.test(a.name)) portable = a;
+        });
+
+        if (setup) {
+          setText('.js-setup-name', setup.name);
+          setText('.js-setup-size', mb(setup.size) + ' · start menu, uninstaller, auto-update');
+          document.querySelectorAll('.js-dl-setup').forEach(function (el) { el.href = setup.browser_download_url; });
+        }
+        if (portable) {
+          setText('.js-portable-name', portable.name);
+          setText('.js-portable-size', mb(portable.size) + ' · single file, nothing installed');
+          document.querySelectorAll('.js-dl-portable').forEach(function (el) { el.href = portable.browser_download_url; });
+        }
+
+        if (rel.published_at) {
+          var d = new Date(rel.published_at);
+          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          var note = 'Released ' + d.getUTCDate() + ' ' + months[d.getUTCMonth()] + ' ' + d.getUTCFullYear() +
+            ' — <a href="' + RELEASES + '">scoreline001/rl-stats</a>.';
+          var el = document.querySelector('.js-date');
+          if (el) el.innerHTML = note;
+        }
+      })
+      .catch(function () { /* offline or rate-limited: keep the static values */ });
+
+    // Star count for the nav badge; falls back to the plain word "GitHub".
+    fetch('https://api.github.com/repos/scoreline001/rl-stats')
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (repo) {
+        if (typeof repo.stargazers_count === 'number' && repo.stargazers_count > 0) {
+          setText('.js-stars', '\u2605 ' + repo.stargazers_count);
+        }
+      })
+      .catch(function () { /* no stars yet — leave the fallback */ });
+
+    // Copy the canonical download link (works even when the API is down).
+    var copyBtn = document.getElementById('copy-link');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var text = RELEASES + '/latest';
+        var done = function () {
+          var label = document.getElementById('copy-link-text');
+          if (!label) return;
+          var old = label.textContent;
+          label.textContent = 'Copied!';
+          setTimeout(function () { label.textContent = old; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, done);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) { /* best effort */ }
+          document.body.removeChild(ta);
+          done();
+        }
+      });
+    }
+
+    // Lightbox for the gallery.
+    var lb = document.getElementById('lightbox');
+    if (lb) {
+      var lbImg = lb.querySelector('img');
+      var lastFocus = null;
+      var open = function (src, alt) {
+        lastFocus = document.activeElement;
+        lbImg.src = src;
+        lbImg.alt = alt || '';
+        lb.hidden = false;
+        lb.querySelector('.lb-close').focus();
+      };
+      var close = function () {
+        lb.hidden = true;
+        lbImg.src = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      };
+      document.querySelectorAll('.shot-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var img = btn.querySelector('img');
+          open(btn.dataset.full || (img && img.src), img && img.alt);
+        });
+      });
+      lb.addEventListener('click', function (e) { if (e.target === lb || e.target === lbImg) close(); });
+      lb.querySelector('.lb-close').addEventListener('click', close);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) close(); });
+    }
+
+    // Scrollspy: highlight the section in view.
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+    if ('IntersectionObserver' in window && links.length) {
+      var map = {};
+      links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            links.forEach(function (a) { a.removeAttribute('aria-current'); });
+            var a = map[en.target.id];
+            if (a) a.setAttribute('aria-current', 'true');
+          }
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+      Object.keys(map).forEach(function (id) {
+        var sec = document.getElementById(id);
+        if (sec) spy.observe(sec);
+      });
+    }
+
+    // Back-to-top and the small-screen CTA: appear after the hero.
+    var totop = document.getElementById('totop');
+    var mcta = document.getElementById('mcta');
+    var hero = document.querySelector('.hero');
+    var onScroll = function () {
+      var y = window.scrollY || window.pageYOffset;
+      if (totop) totop.classList.toggle('show', y > 900);
+      if (mcta && hero) mcta.classList.toggle('show', y > hero.offsetHeight * 0.8);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    if (totop) {
+      totop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
