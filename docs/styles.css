@@ -319,8 +319,7 @@ section { position: relative; z-index: 1; }
 .shot { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-card); overflow: hidden; }
 .shot img { width: 100%; display: block; border-bottom: 1px solid var(--border-soft); }
 .shot figcaption { padding: 12px var(--sp-3); font-size: 13.5px; color: var(--text-dim); }
-.gallery .shot.tall { grid-row: span 2; }
-.gallery .shot.tall img { border-bottom: none; height: 100%; object-fit: cover; }
+.gallery .shot.wide { grid-column: span 2; }
 
 /* The image sits inside a full-width button so it can be clicked to enlarge. */
 .shot-btn {
@@ -350,7 +349,7 @@ section { position: relative; z-index: 1; }
 }
 .lightbox[hidden] { display: none; }
 .lightbox img {
-  max-width: min(1100px, 96vw);
+  max-width: min(1280px, 96vw);
   max-height: 90vh;
   width: auto;
   border: 1px solid var(--border-strong);
@@ -539,7 +538,7 @@ footer .fine .made::before { content: "· "; opacity: 0.6; }
   .grid { grid-template-columns: 1fr; }
   .card.wide { grid-column: auto; }
   .gallery { grid-template-columns: 1fr; }
-  .gallery .shot.tall { grid-row: auto; }
+  .gallery .shot.wide { grid-column: auto; }
   .download { padding: var(--sp-5) var(--sp-4); }
   .dl-card { min-width: 0; width: 100%; }
   .nav-inner { gap: var(--sp-3); }
