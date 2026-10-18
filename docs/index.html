@@ -98,6 +98,28 @@ footer .credit{color:var(--text);font-weight:600;padding-top:14px;border-top:1px
 @media(max-width:860px){.grid,.steps,.honest{grid-template-columns:1fr}.strip .wrap{grid-template-columns:1fr 1fr}.strip span:nth-child(3){border-left:0}.strip span:nth-child(n+3){border-top:1px solid var(--line)}.links{display:none}.nav .btn{margin-left:auto}}
 .btn{transition:transform .15s,border-color .15s,background .15s}.btn:hover{transform:translateY(-2px)}
 .pill b{display:inline-block;animation:blink 2s ease-in-out infinite}
+/* The version pill is the way into the release notes. */
+.pill-btn{font:inherit;color:inherit;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.pill-btn:hover{border-color:#3a4a6e;color:var(--text)}
+.pill-btn .see{color:var(--blue)}
+.pill-btn .caret{font-size:11px;opacity:.7}
+.linky{background:none;border:0;padding:0;font:inherit;color:var(--blue);cursor:pointer;text-decoration:underline}
+/* Release notes. A native <dialog>, so Escape, the focus trap and the backdrop
+   are the browser's job rather than ours. */
+dialog.notes{width:min(660px,92vw);max-height:86vh;margin:auto;padding:0;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:auto}
+dialog.notes::backdrop{background:rgba(4,7,13,.74)}
+dialog.notes[open]{animation:fade .2s ease-out}
+.nhead{position:sticky;top:0;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.nhead h3{margin:0;font:700 22px var(--head)}
+.nhead p{margin:5px 0 0;color:var(--dim);font-size:14px}
+.nclose{flex:none;padding:7px 13px;font-size:15px;line-height:1}
+.nbody{padding:20px 24px 24px}
+.nbody ul{margin:0;padding:0;list-style:none;display:grid;gap:16px}
+.nbody li{position:relative;padding-left:26px;color:var(--dim);font-size:16px;line-height:1.5}
+.nbody li:before{content:"";position:absolute;left:0;top:7px;width:9px;height:9px;border-radius:50%;background:var(--blue)}
+.nbody li b{display:block;color:var(--text)}
+.nfoot{margin:24px 0 0;padding-top:16px;border-top:1px solid var(--line);color:var(--dim);font-size:14px}
+.nfoot a{color:var(--blue)}
 .hero .wrap>*{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
 .hero .wrap>:nth-child(2){animation-delay:.08s}.hero .wrap>:nth-child(3){animation-delay:.18s}.hero .wrap>:nth-child(4){animation-delay:.28s}.hero .wrap>:nth-child(5){animation-delay:.36s}
 .hero .wrap>.frame{animation:rise .9s cubic-bezier(.2,.7,.2,1) .45s both,float 9s ease-in-out 1.5s infinite}
@@ -125,7 +147,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
 </div></nav>
 
 <header class="hero" id="top"><div class="wrap">
-  <span class="pill"><b>●</b> <span class="js-ver">v1.0.0</span> · out now on GitHub</span>
+  <button type="button" class="pill pill-btn js-notes" aria-haspopup="dialog" aria-controls="notes"><b>●</b> <span class="js-ver">v1.1.0</span> · <span class="see">what's new</span> <span class="caret">▾</span></button>
   <h1><span class="b">Every match.</span><br><span class="o">Written down.</span></h1>
   <p class="lead">scoreline reads the stats Rocket League already exports and turns them into a clean history: win rate, streaks, goals, teammates and a live scoreboard over the game. On your PC. No account, no cloud.</p>
   <div class="cta">
@@ -143,7 +165,8 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   <p class="sub">No macros, no scoreboard screenshots, no spreadsheet. Open the app and the numbers are already there.</p>
   <div class="grid">
     <article class="card"><h3>Live match card</h3><p>The running score and a goal flash the moment a goal lands, for both teams.</p></article>
-    <article class="card"><h3>Full match history</h3><p>Mode, score, goals, assists and saves for every game. Filter by queue, teammate or date, then export to JSON or CSV.</p></article>
+    <article class="card"><h3>The arena, pictured</h3><p>Every arena you play shows its own art: on the live card while you play, on the recap when the match ends, and across the history.</p></article>
+    <article class="card"><h3>Full match history</h3><p>Mode, score, goals, assists, shots and saves for every game, each row a banner of the arena it was played on. Filter by queue, teammate or date, then export to JSON or CSV.</p></article>
     <article class="card"><h3>Today at a glance</h3><p>Wins, losses and streak for the session, your last 20 results, and your record in every mode.</p></article>
     <article class="card"><h3>Teammate win rates</h3><p>See who you actually win with, sorted by games together. Both numbers, never just the flattering one.</p></article>
     <article class="card"><h3>In-game overlay</h3><p>A tiny always-on-top scoreboard for any corner. It never steals focus from Rocket League.</p></article>
@@ -193,7 +216,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
     <a class="btn btn-go js-setup" href="https://github.com/scoreline001/rl-stats/releases/latest">Download installer <span class="js-setup-size"></span></a>
     <a class="btn js-portable" href="https://github.com/scoreline001/rl-stats/releases/latest">Download portable <span class="js-portable-size"></span></a>
   </div>
-  <small>Version <span class="js-ver">v1.0.0</span> · <a href="https://github.com/scoreline001/rl-stats/releases">all releases on GitHub</a></small>
+  <small>Version <span class="js-ver">v1.1.0</span> · <button type="button" class="linky js-notes" aria-haspopup="dialog" aria-controls="notes">what's new</button> · <a href="https://github.com/scoreline001/rl-stats/releases">all releases on GitHub</a></small>
 </div></div></section>
 
 <section id="faq"><div class="wrap">
@@ -214,6 +237,23 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   <p class="credit">Made by Cl4s1qu3 · Discord: qx_i</p>
   <p class="copyright">© 2026 Cl4s1qu3. All rights reserved. No copying, modification, redistribution or resale without written permission.</p>
 </div></footer>
+
+<!--
+  Release notes. The version pill (and the line under the download buttons)
+  opens this: a short, hand-written list of what changed in the version the
+  page is advertising. Kept in the page rather than fetched, so it reads the
+  same whether or not the GitHub API answers.
+-->
+<dialog class="notes" id="notes" aria-labelledby="notes-title">
+  <div class="nhead">
+    <div>
+      <h3 id="notes-title">What's new</h3>
+      <p id="notes-sub"></p>
+    </div>
+    <button type="button" class="btn nclose" id="notes-close" aria-label="Close">✕</button>
+  </div>
+  <div class="nbody" id="notes-body"></div>
+</dialog>
 
 <script>
 (function(){
@@ -259,6 +299,74 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
     try{localStorage.setItem(key,JSON.stringify({t:now,d:{tag_name:d.tag_name,assets:(d.assets||[]).map(function(a){return{name:a.name,size:a.size,browser_download_url:a.browser_download_url};})}}));}catch(e){}
     apply(d);
   }).catch(function(){});
+})();
+(function(){
+  // What changed in the version this page advertises. One entry per release; a
+  // version with no entry falls back to the release list on GitHub. Written by
+  // hand on purpose: the notes have to read the same whether or not the API
+  // answers, and they are the one place the page speaks in its own voice.
+  var NOTES={
+    'v1.1.0':{sub:'The maps release — 12 October 2026',items:[
+      ['The arena, pictured','While you play, the live card sits on the arena the game just reported.'],
+      ['The recap keeps it','When the match ends, the summary stays on that arena as its backdrop.'],
+      ['History as banners','Every row of the match history is a banner of the arena it was played on, and the picture pushes in slowly when you point at one.'],
+      ['Shots','The compact stat line is G / A / S / Shots now.'],
+      ['Nothing invented','A match whose arena was never reported shows no picture at all, the same way the app never guesses a number.']
+    ]},
+    'v1.0.0':{sub:'The first release — 10 October 2026',items:[
+      ['Live scoreboard','The running score over the game, and a goal flash the moment a goal lands.'],
+      ['Match history','Every match written down as it ends, with filters and JSON / CSV export.'],
+      ['Teammates','Win rate with everyone you queued with — both numbers, not just the flattering one.']
+    ]}
+  };
+
+  var RELEASES='https://github.com/scoreline001/rl-stats/releases';
+  var dlg=document.getElementById('notes'),body=document.getElementById('notes-body'),sub=document.getElementById('notes-sub');
+
+  function currentTag(){
+    var el=document.querySelector('.js-ver'),t=el?el.textContent.trim():'';
+    if(!/^v?\d/.test(t))return '';
+    return t.charAt(0)==='v'?t:'v'+t;
+  }
+  function fill(){
+    var v=currentTag(),n=NOTES[v];
+    body.textContent='';
+    if(!n){
+      var miss=document.createElement('p');
+      miss.className='nfoot';miss.style.marginTop='0';
+      miss.textContent=v?('The notes for '+v+' are on GitHub.'):'Pick a release on GitHub to read its notes.';
+      body.appendChild(miss);
+      sub.textContent=v?v:'';
+      return;
+    }
+    sub.textContent=v+' · '+n.sub;
+    var ul=document.createElement('ul');
+    n.items.forEach(function(it){
+      var li=document.createElement('li'),b=document.createElement('b'),txt=document.createElement('span');
+      b.textContent=it[0];txt.textContent=it[1];
+      li.appendChild(b);li.appendChild(txt);ul.appendChild(li);
+    });
+    body.appendChild(ul);
+    var a=document.createElement('a'),foot=document.createElement('p');
+    foot.className='nfoot';
+    a.href=RELEASES+'/tag/'+v;
+    a.textContent='Sizes, hashes and every release on GitHub';
+    foot.appendChild(a);
+    body.appendChild(foot);
+  }
+  function openNotes(){
+    if(!dlg)return;
+    if(typeof dlg.showModal!=='function'){location.href=RELEASES;return;}
+    fill();
+    if(!dlg.open)dlg.showModal();
+    document.getElementById('notes-close').focus();
+  }
+
+  [].forEach.call(document.querySelectorAll('.js-notes'),function(b){b.addEventListener('click',openNotes);});
+  if(dlg){
+    document.getElementById('notes-close').addEventListener('click',function(){dlg.close();});
+    dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+  }
 })();
 </script>
 </body>
