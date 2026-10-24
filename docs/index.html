@@ -147,7 +147,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
 </div></nav>
 
 <header class="hero" id="top"><div class="wrap">
-  <button type="button" class="pill pill-btn js-notes" aria-haspopup="dialog" aria-controls="notes"><b>●</b> <span class="js-ver">v1.1.0</span> · <span class="see">what's new</span> <span class="caret">▾</span></button>
+  <button type="button" class="pill pill-btn js-notes" aria-haspopup="dialog" aria-controls="notes"><b>●</b> <span class="js-ver">v1.1.1</span> · <span class="see">what's new</span> <span class="caret">▾</span></button>
   <h1><span class="b">Every match.</span><br><span class="o">Written down.</span></h1>
   <p class="lead">scoreline reads the stats Rocket League already exports and turns them into a clean history: win rate, streaks, goals, teammates and a live scoreboard over the game. On your PC. No account, no cloud.</p>
   <div class="cta">
@@ -165,12 +165,14 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   <p class="sub">No macros, no scoreboard screenshots, no spreadsheet. Open the app and the numbers are already there.</p>
   <div class="grid">
     <article class="card"><h3>Live match card</h3><p>The running score and a goal flash the moment a goal lands, for both teams.</p></article>
-    <article class="card"><h3>The arena, pictured</h3><p>Every arena you play shows its own art: on the live card while you play, on the recap when the match ends, and across the history.</p></article>
+    <article class="card"><h3>The arena, pictured</h3><p>All fifty arenas, correctly named: the live card sits on the map you just loaded, the recap keeps it behind the score, and every history row is a banner of where it was played.</p></article>
     <article class="card"><h3>Full match history</h3><p>Mode, score, goals, assists, shots and saves for every game, each row a banner of the arena it was played on. Filter by queue, teammate or date, then export to JSON or CSV.</p></article>
     <article class="card"><h3>Today at a glance</h3><p>Wins, losses and streak for the session, your last 20 results, and your record in every mode.</p></article>
     <article class="card"><h3>Teammate win rates</h3><p>See who you actually win with, sorted by games together. Both numbers, never just the flattering one.</p></article>
+    <article class="card"><h3>Discord Rich Presence</h3><p>Optional: your Discord profile shows the mode and live score during a game, then your last result and today's record. Off by default.</p></article>
     <article class="card"><h3>In-game overlay</h3><p>A tiny always-on-top scoreboard for any corner. It never steals focus from Rocket League.</p></article>
     <article class="card"><h3>Lite mode</h3><p>Turns off animation and glow and updates less often, for older or low-spec PCs.</p></article>
+    <article class="card"><h3>Starts with Windows</h3><p>One checkbox launches scoreline when you sign in, so the first match of the day is recorded like every other.</p></article>
   </div>
 </div></section>
 
@@ -203,7 +205,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   <p class="sub">An honest tracker is worth more than an optimistic one.</p>
   <div class="honest">
     <article class="card"><h3>No touching the game</h3><p>No injection, no memory reading, no game-file edits. Only the local stats socket.</p></article>
-    <article class="card"><h3>No phoning home</h3><p>No account, no server. Your matches stay in a folder on your PC, and you can export them any time.</p></article>
+    <article class="card"><h3>No phoning home</h3><p>No account, no server. Your matches stay in a folder on your PC, and you can export them any time. The one exception is optional and off by default: Discord Rich Presence, which only sends the two short lines it shows on your profile.</p></article>
     <article class="card"><h3>No rank or MMR</h3><p>The game doesn't export it, so scoreline shows nothing instead of a guess (for now).</p></article>
   </div>
 </div></section>
@@ -216,7 +218,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
     <a class="btn btn-go js-setup" href="https://github.com/scoreline001/rl-stats/releases/latest">Download installer <span class="js-setup-size"></span></a>
     <a class="btn js-portable" href="https://github.com/scoreline001/rl-stats/releases/latest">Download portable <span class="js-portable-size"></span></a>
   </div>
-  <small>Version <span class="js-ver">v1.1.0</span> · <button type="button" class="linky js-notes" aria-haspopup="dialog" aria-controls="notes">what's new</button> · <a href="https://github.com/scoreline001/rl-stats/releases">all releases on GitHub</a></small>
+  <small>Version <span class="js-ver">v1.1.1</span> · <button type="button" class="linky js-notes" aria-haspopup="dialog" aria-controls="notes">what's new</button> · <a href="https://github.com/scoreline001/rl-stats/releases">all releases on GitHub</a></small>
 </div></div></section>
 
 <section id="faq"><div class="wrap">
@@ -227,6 +229,7 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   <details><summary>Where is my data stored?</summary><p>On your PC, in <code>%APPDATA%\scoreline</code>. Nothing is uploaded, and you can export your history to JSON or CSV from the Matches tab.</p></details>
   <details><summary>Will Windows or my antivirus complain?</summary><p>SmartScreen may say "unknown publisher" because releases aren't code-signed (a certificate costs money). Click <strong>More info → Run anyway</strong>. scoreline isn't open source, so download it only from GitHub Releases.</p></details>
   <details><summary>Which languages?</summary><p>English and French, switchable in Settings.</p></details>
+  <details><summary>What does the Discord status share?</summary><p>Only what you can see on your profile: the mode and score while a match runs, then your last result and today's win/loss. It is off by default, needs a Discord application ID you create yourself, and is the app's only outbound connection. Turn it off in Settings whenever you like.</p></details>
 </div></section>
 
 <footer><div class="wrap">
@@ -306,6 +309,14 @@ nav:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;bac
   // hand on purpose: the notes have to read the same whether or not the API
   // answers, and they are the one place the page speaks in its own voice.
   var NOTES={
+    'v1.1.1':{sub:'The arenas & Discord release — 24 October 2026',items:[
+      ['Every arena, named right','All fifty arenas now carry their real in-game name and their own picture — the ones the game reports but the app used to show as a bare asset name included.'],
+      ['Art for 48 of them','Pictures come from the game, the Rocket League Wiki and Liquipedia (CC BY-SA 3.0). Vent and Force Field have no published art, so they stay as colour tiles rather than a made-up image.'],
+      ['A bigger match drawer','Opening a match now gives you a wider panel, a larger score and the arena as a plate in the header.'],
+      ['Discord Rich Presence','Optional and off by default: your Discord profile shows the mode and live score during a game, then your last result and today\'s record. You bring your own Discord application ID, and the app never pretends to be Rocket League.'],
+      ['Starts with Windows','One checkbox in Settings launches scoreline when you sign in, so the first match of the day is recorded too.'],
+      ['The overview you know','The dashboard is back to its 1.1.0 layout: today, live, the six headline numbers, win rate by mode and the last 14 days.']
+    ]},
     'v1.1.0':{sub:'The maps release — 12 October 2026',items:[
       ['The arena, pictured','While you play, the live card sits on the arena the game just reported.'],
       ['The recap keeps it','When the match ends, the summary stays on that arena as its backdrop.'],
